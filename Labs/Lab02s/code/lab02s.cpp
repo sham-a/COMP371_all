@@ -40,12 +40,15 @@ const char* getVertexShaderSource()
     return
     "#version 330 core  \n"
         "layout (location = 0) in vec2 aPos;\n"
+    "layout (location = 1) in vec3 col;\n"
+    "out vec3 vertexColor;\n"
         ""
         "uniform mat2 rotMatrix = mat2(1.0);\n"  // default value for view matrix (identity)
         "\n"
         "void main()\n"
         "{\n"
         "   gl_Position = vec4(aPos, 0, 1);\n"
+    " vertexColor = col;\n"
         "\n"
         "}\n";
 }
@@ -55,12 +58,73 @@ const char* getFragmentShaderSource()
 {
     return
     "#version 330 core  \n"
+    "in vec3 vertexColor;\n"
         "out vec3 FragColor;"
         ""
         "void main()"
         "{"
-        "   FragColor = vec3(1, 1, 0);"
+ //       "   FragColor = vec3(1, 1, 0);\n"
+    "   FragColor = vertexColor;\n"
         "}";
+}
+
+
+const char* getVertexShaderSource2()
+{
+    return
+    "#version 330 core  \n"
+        "layout (location = 0) in vec2 aPos;\n"
+    "layout (location = 1) in vec3 col;\n"
+    "layout (location = 2) in vec2 p1;\n"
+    "layout (location = 3) in vec2 p2;\n"
+    "layout (location = 4) in vec2 p3;\n"
+    "out vec3 vertexColor;\n"
+    "out vec2 op1;\n"
+    "out vec2 op2;\n"
+    "out vec2 op3;\n"
+    "out vec2 op;\n"
+        ""
+        "uniform mat2 rotMatrix = mat2(1.0);\n"  // default value for view matrix (identity)
+        "\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos, 0, 1);\n"
+    " vertexColor = col;\n"
+    "op1 = p1;op2 = p2;op3 = p3; op = aPos;\n"
+        "\n"
+        "}\n";
+}
+
+const char* getFragmentShaderSource2()
+{
+    return
+    "#version 330 core  \n"
+    "in vec3 vertexColor;\n"
+    "in vec2 op1;\n"
+    "in vec2 op2;\n"
+    "in vec2 op3;\n"
+    "in vec2 op;\n"
+        "out vec3 FragColor;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+    "if((op[0]-op1[0])*(op[0]-op1[0]) + \n" "(op[1]-op1[1])*(op[1]-op1[1])<=(op[0]-op2[0])*(op[0]-op2[0]) +\n"
+      " (op[1]-op2[1])*(op[1]-op2[1])){\n"
+    
+    "if((op[0]-op1[0])*(op[0]-op1[0]) + \n" "(op[1]-op1[1])*(op[1]-op1[1])<=(op[0]-op3[0])*(op[0]-op3[0]) +\n"
+      " (op[1]-op3[1])*(op[1]-op3[1])){\n"
+    
+     "   FragColor = vec3(1, 0, 0);\n"
+  "  } else {\n"
+"        FragColor = vec3(0, 0, 1);\n"
+"    } }else {\n"
+    "if((op[0]-op2[0])*(op[0]-op2[0]) + \n" "(op[1]-op2[1])*(op[1]-op2[1])<=(op[0]-op3[0])*(op[0]-op3[0]) +\n"
+      " (op[1]-op3[1])*(op[1]-op3[1])){\n"
+    
+     "   FragColor = vec3(0, 1, 0);\n"
+  "  } else {\n"
+"        FragColor = vec3(0, 0, 1);\n"
+        "}}}\n";
 }
 
 
@@ -115,7 +179,7 @@ int compileAndLinkShaders(const char* vertexShaderSource, const char* fragmentSh
     return shaderProgram;
 }
 
-void createRenderingData(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO)
+void createRenderingData(unsigned int& VAO, unsigned int& VBO,unsigned int& CBO, unsigned int PBO[], unsigned int& EBO)
 {
     
     // Define and upload geometry to the GPU here ...
@@ -131,18 +195,55 @@ void createRenderingData(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO
        
     };
     
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glBindVertexArray(VAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
+    float color[] = {
+         1.0f,  0.0f, 0.0,
+         0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f
+       
+    };
     
+    // 0 - create the vertex array
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+    
+    
+    // create the vertex buffer
+        glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    
+    // create the color
+        glGenBuffers(1, &CBO);
+    glBindBuffer(GL_ARRAY_BUFFER, CBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    
+    glGenBuffers(3, PBO);
+    // create the triplet of inputs
+    int offset = 2;
+    for(int i=0;i<3;++i){
+        glBindBuffer(GL_ARRAY_BUFFER, PBO[i]);
+        
+        float buffer[6];
+        for(int j=0;j<3;++j){
+            for(int k=0;k<2;++k){
+                buffer[2*j+k] = vertices[2*i+k];
+            }
+        }
+        glBufferData(GL_ARRAY_BUFFER, sizeof(buffer), buffer, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(offset+i, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(offset+i);
+    }
+    
+    
+    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -197,7 +298,7 @@ int main(int argc, char*argv[])
     
     
     // Compile and link shaders here ...
-    int shaderProgram = compileAndLinkShaders(getVertexShaderSource(), getFragmentShaderSource());
+    int shaderProgram = compileAndLinkShaders(getVertexShaderSource2(), getFragmentShaderSource2());
     
     
     
@@ -214,8 +315,9 @@ int main(int argc, char*argv[])
     debug_gl(0);
     
 
-    unsigned int VAO, EBO, VBO;
-    createRenderingData(VAO, VBO, EBO);
+    unsigned int VAO, VBO, CBO, EBO;
+    unsigned int PBO[3];
+    createRenderingData(VAO, VBO, CBO, PBO, EBO);
 
     
     
@@ -246,7 +348,7 @@ int main(int argc, char*argv[])
         
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
         
-        debug_gl(35);
+   //     debug_gl(35);
        
         
         glfwSwapBuffers(window);
