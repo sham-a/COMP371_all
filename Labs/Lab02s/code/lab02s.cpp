@@ -187,7 +187,7 @@ void createRenderingData(unsigned int& VAO, unsigned int& VBO,unsigned int& CBO,
     float vertices[] = {
          -0.5f,  -0.5f,
          0.5f, -0.5f,
-        0.0f, 0.5f
+        0.0f, 0.75f
        
     };
     unsigned int indices[] = {  // note that we start from 0!

@@ -1,6 +1,6 @@
 
 
-using namespace std;
+
 
 #include <iostream>
 #include <eigen3/Eigen/Core>
@@ -9,33 +9,10 @@ using namespace std;
 #include "json.hpp"
 #include "simpleppm.h"
 
+#include <sstream>
 
-
-int print_eigen(Eigen::Matrix3d m)
-{
-    // Eigen Matrices do have rule to print them with std::cout
-    std::cout << m << std::endl;
-    return 0;
-}
-
-int test_eigen()
-{
-    
-    
-    Eigen::Matrix3d test; //3 by 3 double precision matrix initialization
-
-    // Let's make it a symmetric matrix
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-            test(i,j) = (i+1)*(1+j);
-    }
-
-    // Print
-    print_eigen(test);
-
-    return 0;
-}
+using namespace std;
+using namespace nlohmann;
 
 
 int test_save_ppm(){
@@ -62,12 +39,5 @@ int test_save_ppm(){
              
     save_ppm("test.ppm", buffer, dimx, dimy);
     
-    return 0;
-}
-
-
-int test_all(){
-    test_eigen();
-    test_save_ppm();
     return 0;
 }
