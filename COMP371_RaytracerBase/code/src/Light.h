@@ -1,1 +1,0 @@
-/Users/stpopa/software/Teaching/COMP371_RayTRacerSolution/Light.h
