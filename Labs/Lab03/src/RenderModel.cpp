@@ -60,8 +60,8 @@ namespace TAPP {
 
         
         // Create and compile our GLSL program from the shaders
-        string vsh1 =  "StandardShading.vertexshader";
-        string fsh1 = "StandardShading.fragmentshader";
+        string vsh1 =  "assets/StandardShading.vertexshader.glsl";
+        string fsh1 = "assets/StandardShading.fragmentshader.glsl";
         
         programID = LoadShaders( vsh1.c_str(), fsh1.c_str());
        
@@ -87,7 +87,7 @@ namespace TAPP {
         
         // Read our .obj file
         
-        std::string s1 =  "sp_txt_inv.obj";
+        std::string s1 =  "assets/sp_txt_inv.obj";
         
         cout<<"Loading model "<<s1<<endl;
         
