@@ -1,6 +1,13 @@
 
 
-using namespace std;
+#ifdef COURSE_SOLUTION
+#include "src/RayTracer.h"
+#endif
+
+#ifdef STUDENT_SOLUTION
+#include "src/RayTracer.h"
+#endif
+
 
 #include <iostream>
 #include <string>
@@ -10,10 +17,8 @@ using namespace std;
 #include "external/json.hpp"
 #include "external/simpleppm.h"
 
-#ifdef COURSE_SOLUTION
-#include "src/RayTracer.h"
-#endif
 
+using namespace std;
 
 int test_eigen();
 int test_save_ppm();
@@ -52,6 +57,11 @@ int main(int argc, char* argv[])
         rt.run();
 #else
         
+#ifdef STUDENT_SOLUTION
+        RayTracer rt(j);
+        rt.run();
+#else
+        // GIven code - a bunch of test functions to showcase the funcitonality
         test_eigen();
         test_save_ppm();
         
@@ -60,6 +70,9 @@ int main(int argc, char* argv[])
         } else {
             cout<<"Could not load file!"<<endl;
         }
+#endif
+        
+        
 #endif
     }
   
