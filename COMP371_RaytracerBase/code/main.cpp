@@ -51,12 +51,14 @@ int main(int argc, char* argv[])
         cout<<"Parsed successfuly"<<endl;
         
 #ifdef COURSE_SOLUTION
+        cout<<"Running course solution"<<endl;
         RT371::RayTracer<RT371::Kernelf> rt(j);
         cout<<"Running!"<<endl;
         rt.run();
 #else
         
 #ifdef STUDENT_SOLUTION
+        cout<<"Running studnt solution"<<endl;
         RayTracer rt(j);
         rt.run();
 #else

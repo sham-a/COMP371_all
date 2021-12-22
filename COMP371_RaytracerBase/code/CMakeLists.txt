@@ -32,6 +32,7 @@ link_directories(${Eigen3_INCLUDE_DIRS})
 # not sure why on my machine the above options don't work
 # I need to add it manually here
 include_directories(/opt/local/include/)
+include_directories(/opt/local/include/eigen3/)
 
 #Additions for the lab
 include_directories(/encs/include/)
