@@ -3,8 +3,8 @@
 
 
 #include <iostream>
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 
 #include "json.hpp"
 #include "simpleppm.h"

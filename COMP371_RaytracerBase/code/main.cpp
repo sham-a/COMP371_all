@@ -11,8 +11,8 @@
 
 #include <iostream>
 #include <string>
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 
 #include "external/json.hpp"
 #include "external/simpleppm.h"

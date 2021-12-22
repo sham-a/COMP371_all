@@ -33,6 +33,11 @@ link_directories(${Eigen3_INCLUDE_DIRS})
 # I need to add it manually here
 include_directories(/opt/local/include/)
 
+#Additions for the lab
+include_directories(/encs/include/)
+include_directories(/encs/pkg/eigen-3.3.7/root/)
+link_directories(/encs/lib64/)
+
 # If you need too manually add the paths to your Eigen library, you can add it here
 # do not delete the other 
 
@@ -47,5 +52,6 @@ add_executable(raytracer main.cpp ${SOURCE}) #The name of the cpp file and its p
 
 # link only to Eigen
 target_link_libraries(${PROJECT_NAME}
-   ${Eigen3_LIBRARIES}
+#   ${Eigen3_LIBRARIES}
+#/encs/pkg/eigen-3.3.7/root
    )
