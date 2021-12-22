@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
         test_eigen();
         test_save_ppm();
         
-        
     } else {
         
         cout<<"Scene: "<<argv[1]<<endl;
