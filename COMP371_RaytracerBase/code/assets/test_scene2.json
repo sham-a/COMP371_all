@@ -18,7 +18,9 @@
     }],
     "light":[{
         "type":"point",
-        "centre":[0, 0, 0]
+        "centre":[0, 0, 0],
+        "id":[1, 1, 1],
+        "is":[1, 1, 1]
     }],
     "output":[{
         "filename":"test2.ppm",
@@ -26,7 +28,9 @@
         "lookat":[0,0,-1],
         "up":[0,1,0],
         "fov":90,
-        "centre":[0,0,0]
+        "centre":[0,0,0],
+        "ai":[1,1,1],
+        "bkc":[1,1,1]
     }
     ]
 }
