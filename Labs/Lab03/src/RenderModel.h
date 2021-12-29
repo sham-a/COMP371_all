@@ -26,27 +26,35 @@ namespace TAPP {
         
     }
     
+        
+        // Uniform variables
+        
         GLuint MatrixID;
         GLuint ViewMatrixID;
         GLuint ModelMatrixID;
         GLuint LightID;
+        GLuint dcID;//diffuse color
         
-        GLuint vertexbuffer;
-        GLuint VertexArrayID;
+        
+       // Geometric data buffers
+        
+        // vertex array
+        unsigned int m_VAO;
+        
+        // vertex buffer
+        unsigned int m_VBO;
+        
+        // normal buffer
+        unsigned int m_NBO;
+        
+        // element buffer object - holds the triangle indices
+        unsigned int m_EBO;
+        
+        void load_geometry();
+        
+        // shader program
         GLuint programID;
-        
-        GLuint Texture;
-        GLuint TextureID;
-        GLuint uvbuffer;
-        GLuint normalbuffer;
-        
-        std::vector<glm::vec3> vertices;
-        std::vector<glm::vec2> uvs;
-        std::vector<glm::vec3> normals;
-        
-        int txt_width, txt_height;
-        
-        std::string m_image_name;
+        void load_shader();
         
         ObjModel m_obj;
         
@@ -58,6 +66,10 @@ namespace TAPP {
         virtual void resize(double x, double y);
         
         virtual void render() ;
+        
+        void render_general(int mode);
+        
+        
         virtual void render_pick_select(PickDataback& ) ; // to see if we selected this object
         virtual void render_pick_detail(PickDataback& ); // to see if we selected a certain primitive
     

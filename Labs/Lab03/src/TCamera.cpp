@@ -131,11 +131,11 @@ void TCamera::Scroll(double y){
     scroll_zoom += y * zscale;
     
     // set some boundaries
-    if(scroll_zoom<0)
-        scroll_zoom = 0;
+  //  if(scroll_zoom<0)
+    //    scroll_zoom = 0;
     
-    if(scroll_zoom>1.0-0.01)
-        scroll_zoom -=y * zscale;
+   // if(scroll_zoom>1.0-0.01)
+     //   scroll_zoom -=y * zscale;
     
     zoom = glm::translate(view, glm::vec3(0, 0, scroll_zoom));
     

@@ -25,34 +25,38 @@ bool loadOBJT(
 
 	Load(obj, path);
     
-    obj.add_spherical_coordinates(1, txt_width, txt_height );
+ //   obj.add_spherical_coordinates(1, txt_width, txt_height );
     
 	if (obj.nfaces.size() == 0 || obj.txfaces.size() == 0) {
 		cout << "I do not have both normals and textures" << endl;
-		return false;
+		//return false;
 	}
 
     
     
     
 	for ( int i = 0; i < obj.faces.size(); i++) {
+        
+        if(obj.faces[i].size()!=3){
+            cout<<"Error!"<<endl;
+        }
+        
 		for (int j = 0; j < obj.faces[i].size(); ++j){
 
-
-		
-
+            
+            
 			// Get the attributes thanks to the index
 			TPoint P = obj.vertex[obj.faces[i][j]];
 			TVector N = obj.normal[obj.nfaces[i][j]];
-			TVector txt = obj.texture[obj.txfaces[i][j]];
+		//	TVector txt = obj.texture[obj.txfaces[i][j]];
 
 			glm::vec3 vertex(P[0], P[1], P[2]);
-			glm::vec2 uv(txt[0], txt[1]);
+			//glm::vec2 uv(txt[0], txt[1]);
 			glm::vec3 normal(N[0], N[1], N[2]);
 
 			// Put the attributes in buffers
 			out_vertices.push_back(vertex);
-			out_uvs.push_back(uv);
+			//out_uvs.push_back(uv);
 			out_normals.push_back(normal);
 
 		}

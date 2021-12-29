@@ -4,7 +4,7 @@
 
 #include "GLUtils.h"
 
-#include "ObjParser.h"
+#include "ObjModel.h"
 
 #include "GLUtils.h"
 
@@ -36,106 +36,96 @@ namespace TAPP {
         
     }
     
+    void RenderModel::load_geometry(){
+        
+        
+        std::string path =  "assets/sp.obj";
+        Load(m_obj, path.c_str());
+        std::vector<float> vertices, normals;
+        for(int i=0;i<m_obj.vertex.size();++i){
+            for(int j=0;j<3;++j){
+                vertices.push_back(m_obj.vertex[i][j]);
+                normals.push_back(m_obj.normal[i][j]);
+            }
+        }
+        
+        cout<<"Mesh has: "<<vertices.size()/3<<": vertices!"<<endl;
+        
+        std::vector<unsigned int> indices;
+        for(int i=0;i<m_obj.faces.size();++i){
+            if(m_obj.faces[i].size()!=3){
+                cout<<"Error: not a triangular mesh!"<<endl;
+                return;
+            }
+            for(int j=0;j<3;++j){
+                indices.push_back(m_obj.faces[i][j]);
+            }
+        }
+        
+        cout<<"Mesh has: "<<indices.size()/3<<": faces!"<<endl;
+
+        
+        // 0 - create the vertex array object
+        glGenVertexArrays(1, &m_VAO);
+        glBindVertexArray(m_VAO);
+        
+        // create the vertex buffer object -- first entry in the renderer
+        glGenBuffers(1, &m_VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),(void*)0);
+        glEnableVertexAttribArray(0);
+        
+        glGenBuffers(1, &m_NBO);
+        glBindBuffer(GL_ARRAY_BUFFER, m_NBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(normals), &normals[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        
+        
+        // element array buffer
+        glGenBuffers(1, &m_EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
+
+
+       // glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //glBindVertexArray(0);
+    }
+
+
+
     
     void RenderModel::init(){
-        
-      
-        
         is_error();
         
-        glGenVertexArrays(1, &VertexArrayID);
+        load_geometry();
+        // Create and compile our GLSL program from the shaders
+        string vsh1 = "assets/Phong.vertexshader.glsl";
+        string fsh1 = "assets/Phong.fragmentshader.glsl";
         
+        programID = LoadShaders( vsh1.c_str(), fsh1.c_str());
+       
+        
+       
         if(is_error(true)){
             cout<<"Err 00"<<endl;
         }
         
-        glBindVertexArray(VertexArrayID);
-        
-       
-        
-        
-        if(is_error(true)){
-            cout<<"Err 0"<<endl;
-        }
-
-        
-        // Create and compile our GLSL program from the shaders
-        string vsh1 =  "assets/StandardShading.vertexshader.glsl";
-        string fsh1 = "assets/StandardShading.fragmentshader.glsl";
-        
-        programID = LoadShaders( vsh1.c_str(), fsh1.c_str());
        
        
-        if(is_error()){
-            cout<<"Err A"<<endl;
-        }
-        
-        // C u ntil here
-       // std::cout << "Sphere360 draw()" << std::endl;
-        
-        // Load the texture
-        string s2 =  m_image_name;
-        
-        Texture = loadBMP_custom(s2.c_str(), txt_width, txt_height);
-        
-      //  cout<<"Debug A"<<endl;
-        
-        //cout<<"Texture size: "<<txt_width<<" "<<txt_height<<endl;
-        
-        // Get a handle for our "myTextureSampler" uniform
-        TextureID = glGetUniformLocation(programID, "myTextureSampler");
-        
-        // Read our .obj file
-        
-        std::string s1 =  "assets/sp_txt_inv.obj";
-        
-        cout<<"Loading model "<<s1<<endl;
-        
-        bool res = loadOBJT(s1.c_str(), vertices, uvs, normals, m_obj, txt_width, txt_height);
-        
-        if(!res){
-            cout<<"Error in loading the sphere object!"<<endl;
-        }
-        
-        
-     //   std::cout << vertices.size() << std::endl;
-        
         // Get a handle for our "MVP" uniform
         MatrixID = glGetUniformLocation(programID, "MVP");
         ViewMatrixID = glGetUniformLocation(programID, "V");
         ModelMatrixID = glGetUniformLocation(programID, "M");
+        LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+        dcID = glGetUniformLocation(programID, "diffuse_color");
         
         
         if(is_error()){
             cout<<"Err B"<<endl;
         }
         
-        // Get a handle for our "LightPosition" uniform
-        glUseProgram(programID);
-        LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-        
-        
-        
-        // Load it into a VBO
-        
-        glGenBuffers(1, &vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-        
-        
-        glGenBuffers(1, &uvbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-        
-        
-        glGenBuffers(1, &normalbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
-        
-        
-        if(is_error()){
-            cout<<"Err C"<<endl;
-        }
     }
     
     
@@ -153,29 +143,30 @@ namespace TAPP {
          */
     }
     
-    void RenderModel::render() {
+
+void RenderModel::render(){
+    
+  //  render_general(0);
+
+   render_general(0);
+
+}
+
+
+
+    void RenderModel::render_general(int mode){
+        if(is_error()){
+            cout<<"Err B1"<<endl;
+        }
         
-        is_error();
+        // Get a handle for our "LightPosition" uniform
+        glUseProgram(programID);
         
     //    cout<<"render"<<endl;
         
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        
-        glBindVertexArray(VertexArrayID);
-        
-        if(is_error(true)){
-            cout<<"Err U0"<<endl;
-        }
-        
-        
-        glUseProgram(programID);
-
-        
         if(is_error()){
-            cout<<"Err U"<<endl;
+            cout<<"Err B2"<<endl;
         }
-        
         
         glm::mat4 mm(1.0f);
         glm::mat4 MVP = m_ProjMatrix * m_ViewMatrix;
@@ -188,6 +179,10 @@ namespace TAPP {
         std::cout << std::endl;
 #endif
         
+        if(is_error()){
+            cout<<"Err B3"<<endl;
+        }
+        
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &m_ViewMatrix[0][0]);
         glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &mm[0][0]);
@@ -195,113 +190,32 @@ namespace TAPP {
         glm::vec3 lightPos = glm::vec3(4, 4, 4);
         //	glm::vec3 lightPos = glm::vec3(0,0,0);
         
+        
+        if(is_error()){
+            cout<<"Err B4"<<endl;
+        }
+        
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
         
+        glm::vec3 dc = glm::vec3(1, 0, 0);
+        if(mode==1)
+            dc=glm::vec3(0, 0, 1);
         
+        
+        glUniform3f(dcID, dc.x, dc.y, dc.z);
+        
+      
+       
         if(is_error()){
-            cout<<"Err D"<<endl;
+            cout<<"Err 3"<<endl;
         }
+       
         
-        
-        
-        // Bind our texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        
-        if(is_error()){
-            cout<<"Err E"<<endl;
-        }
-        
-        if(Texture)
-            glBindTexture(GL_TEXTURE_2D, Texture);
-        
-        if(is_error()){
-            cout<<"Err E1"<<endl;
-        }
-        
-        // Set our "myTextureSampler" sampler to use Texture Unit 0
-        glUniform1i(TextureID, 0);
-        
-        if(is_error()){
-            cout<<"Err E2"<<endl;
-        }
-        
-        // 1rst attribute buffer : vertices
-        glEnableVertexAttribArray(0);
-        
-        if(is_error(true)){
-            cout<<"Err E2.1"<<endl;
-        }
-        
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        
-        
-        
-        if(is_error(true)){
-            cout<<"Err E2.2"<<endl;
-        }
-        
-        glVertexAttribPointer(
-                              0,                  // attribute
-                              3,                  // size
-                              GL_FLOAT,           // type
-                              GL_FALSE,           // normalized?
-                              0,                  // stride
-                              (void*)0            // array buffer offset
-                              );
-        
-        if(is_error(true)){
-            cout<<"Err E3"<<endl;
-        }
-        
-        // 2nd attribute buffer : UVs
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glVertexAttribPointer(
-                              1,                                // attribute
-                              2,                                // size
-                              GL_FLOAT,                         // type
-                              GL_FALSE,                         // normalized?
-                              0,                                // stride
-                              (void*)0                          // array buffer offset
-                              );
-        
-        
-        
-        if(is_error(true)){
-            cout<<"Err E4"<<endl;
-        }
-        
-        // 3rd attribute buffer : normals
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-        glVertexAttribPointer(
-                              2,                                // attribute
-                              3,                                // size
-                              GL_FLOAT,                         // type
-                              GL_FALSE,                         // normalized?
-                              0,                                // stride
-                              (void*)0                          // array buffer offset
-                              );
-        
-        
-        if(is_error(true)){
-            cout<<"Err F"<<endl;
-        }
-        
-        // Draw the triangles !
-        //glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        glDrawArrays(GL_LINES, 0, vertices.size());
-        //  std::cout<<vertices.size()<<std::endl;
-        
-        if(is_error(true)){
-            cout<<"Err G"<<endl;
-            std::cout<<vertices.size()<<std::endl;
-        }
-        
-//        glDisableVertexAttribArray(0);
- //       glDisableVertexAttribArray(1);
-  //      glDisableVertexAttribArray(2);
-        
+       // glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+       // glEnable(GL_DEPTH_TEST);
+        glBindVertexArray(m_VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
         
     }
     void RenderModel::render_pick_select(PickDataback& ) { // to see if we selected this object
@@ -370,8 +284,10 @@ namespace TAPP {
                 tmp[0] = (1 - bary.x - bary.y) * uvs[0][0] + bary.x*uvs[1][0]+bary.y*uvs[2][0];
                 tmp[1] = (1 - bary.x - bary.y) * uvs[0][1] + bary.x*uvs[1][1]+bary.y*uvs[2][1];
                 
-                int ww = txt_width;
-                int hh = txt_height;
+                
+                // HACK
+                int ww = 0;//txt_width;
+                int hh = 0;//txt_height;
                 
                 pd.P2d[0] = p_uv[0]* ww;
                 pd.P2d[1] = (1-p_uv[1])*hh;
