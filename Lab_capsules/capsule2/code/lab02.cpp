@@ -217,7 +217,7 @@ void createRenderingData(unsigned int& VAO, unsigned int& VBO,unsigned int& CBO,
     
     
     // create the color
-        glGenBuffers(1, &CBO);
+    glGenBuffers(1, &CBO);
     glBindBuffer(GL_ARRAY_BUFFER, CBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
 
