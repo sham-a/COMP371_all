@@ -86,15 +86,10 @@ int Tokenize(std::string &dst, std::string &source, std::string k){
 
     char a[100];
 
-	// TIBI HACK
-    // strcpy(a,  source.c_str());
-    
-#if RUNONMAC
-	// Severity	Code	Description	Project	File	Line	Suppression State
-	// Error	C4996	'strcpy': This function or variable may be unsafe.Consider using strcpy_s instead.To disable deprecation, use _CRT_SECURE_NO_WARNINGS.See online help for details.TexturingTool	c : \users\cgluser\desktop\jean\sphereapp\src\objparser.cpp	86
-	strcpy(a, source.c_str());
-#else
+#ifdef _WIN32
     strcpy_s(a,  source.c_str());
+#else
+    strcpy(a, source.c_str());
 #endif
 
     return 0;
