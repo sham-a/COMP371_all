@@ -1,6 +1,6 @@
 # CMake entry point
 cmake_minimum_required (VERSION 3.0)
-project(lab03s)
+project(capsule03)
 
 add_compile_options(-std=c++11) #optional to use c++11
 
@@ -35,7 +35,7 @@ link_directories(/opt/local/lib)
 
 AUX_SOURCE_DIRECTORY(src SOURCES)
 
-add_executable(lab03s ${SOURCES})
+add_executable(capsule03 ${SOURCES})
 
 
-target_link_libraries(lab03s ${ALL_LIBS})
+target_link_libraries(capsule03 ${ALL_LIBS})
