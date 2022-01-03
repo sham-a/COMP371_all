@@ -9,7 +9,10 @@ find_package(GLEW REQUIRED)
 
 set(CMAKE_CXX_STANDARD 11)
 
+link_directories(/opt/local/lib/)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_OSX")
 
 add_executable(${PROJECT_NAME}  capsule02.cpp) #The name of the cpp file and its path can vary
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW glfw)
+target_link_libraries(${PROJECT_NAME} OpenGL::GL glew glfw)

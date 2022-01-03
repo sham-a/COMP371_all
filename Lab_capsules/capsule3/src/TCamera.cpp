@@ -11,9 +11,8 @@
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 #else
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-//#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #endif
 
 #include <glm/glm.hpp>
