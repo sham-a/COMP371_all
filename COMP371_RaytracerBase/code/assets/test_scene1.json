@@ -23,7 +23,7 @@
         
     }],
     "output":[{
-        "filename":"test1.ppm",
+        "filename":"test_scene1.ppm",
         "size":[500,500],
         "lookat":[0,0,-1],
         "up":[0,1,0],
