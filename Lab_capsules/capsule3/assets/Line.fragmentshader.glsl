@@ -7,12 +7,8 @@ in vec3 Position_worldspace;
 out vec3 color;
 
 // Values that stay constant for the whole mesh.
-uniform sampler2D myTextureSampler;
-uniform mat4 MV;
-uniform vec3 LightPosition_worldspace;
+uniform vec3 diffuse_color;
 
 void main(){
-
-	color = vec3(1, 0,0); 
-
+	color = diffuse_color;
 }

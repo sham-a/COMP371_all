@@ -126,6 +126,11 @@ namespace TAPP {
         string fsh1 = "assets/Phong.fragmentshader.glsl";
 
         programPhong = LoadShaders( vsh1.c_str(), fsh1.c_str());
+        
+         vsh1 = "assets/Line.vertexshader.glsl";
+         fsh1 = "assets/Line.fragmentshader.glsl";
+
+        programWire = LoadShaders( vsh1.c_str(), fsh1.c_str());
        
         if(is_error(true)){
             cout<<"Err 00"<<endl;
@@ -138,6 +143,10 @@ namespace TAPP {
         shaderV = glGetUniformLocation(programPhong, "V");
         shaderLight = glGetUniformLocation(programPhong, "LightPosition_worldspace");
         shaderDiffuse = glGetUniformLocation(programPhong, "diffuse_color");
+        
+        wireMVP = glGetUniformLocation(programWire, "MVP");
+        wireV = glGetUniformLocation(programWire, "V");
+        wireDiffuse = glGetUniformLocation(programWire, "diffuse_color");
         
         
         if(is_error()){
@@ -173,6 +182,10 @@ void RenderModel::render(){
 
 
     void RenderModel::render_general(int mode){
+        
+        glDisable(GL_CULL_FACE); 
+        
+        
         if(is_error()){
             cout<<"Err B1"<<endl;
         }
@@ -188,8 +201,11 @@ void RenderModel::render(){
          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
         
         // Get a handle for our "LightPosition" uniform
-        glUseProgram(programPhong);
-        
+        if(mode==0){
+            glUseProgram(programPhong);
+        } else {
+            glUseProgram(programWire);
+        }
     //    cout<<"render"<<endl;
         
         if(is_error()){
@@ -215,17 +231,22 @@ void RenderModel::render(){
             cout<<"Err B3"<<endl;
         }
         
-        glUniformMatrix4fv(shaderMVP, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(shaderV, 1, GL_FALSE, &m_ViewMatrix[0][0]);
+        
         glm::vec3 lightPos = glm::vec3(0,0,0);
-        glUniform3f(shaderLight, lightPos.x, lightPos.y, lightPos.z);
-        
         glm::vec3 dc = glm::vec3(1, 0, 0);
-        if(mode==1)
-            dc=glm::vec3(0, 0, 1);
+        if(mode==0){
+            glUniformMatrix4fv(shaderMVP, 1, GL_FALSE, &MVP[0][0]);
+            glUniformMatrix4fv(shaderV, 1, GL_FALSE, &m_ViewMatrix[0][0]);
+            glUniform3f(shaderDiffuse, dc.x, dc.y, dc.z);
+            glUniform3f(shaderLight, lightPos.x, lightPos.y, lightPos.z);
+        } else {
+            dc  =glm::vec3(0, 0, 1);
+            glUniformMatrix4fv(wireMVP, 1, GL_FALSE, &MVP[0][0]);
+            glUniformMatrix4fv(wireV, 1, GL_FALSE, &m_ViewMatrix[0][0]);
+            glUniform3f(wireDiffuse, dc.x, dc.y, dc.z);
+        }
         
-        glUniform3f(shaderDiffuse, dc.x, dc.y, dc.z);
-    
+       
         if(is_error()){
             cout<<"Err 3"<<endl;
         }

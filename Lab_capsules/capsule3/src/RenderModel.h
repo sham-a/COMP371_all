@@ -5,12 +5,6 @@
 #include "RUIObject.h"
 #include <vector>
 
-#ifdef RUNONMAC
-//#include <OpenGL/gl.h>
-#else
-
-//#include <GL/gl.h>
-#endif
 
 #include "ObjModel.h"
 
@@ -40,6 +34,10 @@ namespace TAPP {
         GLuint shaderV;
         GLuint shaderLight;
         GLuint shaderDiffuse;//diffuse color
+        
+        GLuint wireMVP;
+        GLuint wireV;
+        GLuint wireDiffuse;//diffuse color
         
         // shader program
         GLuint programPhong;
