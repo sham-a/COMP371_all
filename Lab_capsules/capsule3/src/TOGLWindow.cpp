@@ -20,12 +20,13 @@ namespace TAPP {
         glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
         // Open a window and create its OpenGL context
         m_window = glfwCreateWindow(m_width, m_height, name.c_str(), NULL, NULL);
         if (m_window == NULL) {
-            fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
+            fprintf(stderr, "Failed to open GLFW window. Please check if your video driver is installed correctly and if it is OpenGL 3.3+.\n");
             return false;
         }
         
