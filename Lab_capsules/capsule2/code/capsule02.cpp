@@ -261,17 +261,10 @@ int main(int argc, char*argv[])
     // Initialize GLFW and OpenGL version
     glfwInit();
 
-#if defined(PLATFORM_OSX)
-    std::cout<<"MAC"<<std::endl;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#else
-	// We support only Linux
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#endif
 
     // Create Window and rendering context using GLFW, resolution is 800x600
     GLFWwindow* window = glfwCreateWindow(800, 600, "Comp371 - Lab 01", NULL, NULL);
