@@ -1,18 +1,25 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(capsule02) #The name of your choice for the project comes here
+project(capsule02) # The name of your choice for the project comes here
 
-find_package(OpenGL REQUIRED COMPONENTS OpenGL)
-find_package(glfw3 REQUIRED)
-find_package(GLEW REQUIRED)
-
+set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_STANDARD 11)
 
-link_directories(/opt/local/lib/)
+set(CMAKE_PREFIX_PATH
+    /encs # For ENCS lab computers
+    /opt/local # Macports
+)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_OSX")
+find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+find_package(GLEW REQUIRED)
+find_package(glfw3 REQUIRED
+    HINTS /encs/pkg/glfw-3.3.4/root # ENCS installation of glfw
+)
 
-add_executable(${PROJECT_NAME}  capsule02.cpp) #The name of the cpp file and its path can vary
+# NOTE: ENCS glm installation is missing links to *.inl files so we need this line
+include_directories(/encs/pkg/glm-0.9.9.8/root/include)
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL glew glfw)
+add_executable(${PROJECT_NAME} capsule02.cpp) #The name of the cpp file and its path can vary
+
+target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)

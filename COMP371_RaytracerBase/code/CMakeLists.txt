@@ -18,18 +18,26 @@ project(raytracer)
 # If we commit it by mistake please disable it and let us know
 #add_compile_options(-DCOURSE_SOLUTION)
 
+set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_PREFIX_PATH
+    /encs # For ENCS lab computers
+    /opt/local # Macports
+)
+
+# ENCS Eigen3 CMake setup
+set(ENV{EIGEN3_ROOT} /encs/pkg/eigen-3.3.7/root)
+set(CMAKE_MODULE_PATH /encs/pkg/eigen-3.3.7/root/cmake)
+
 find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS})
+include_directories(${EIGEN3_INCLUDE_DIR})
 
 # If you need too manually add the paths to your Eigen library, you can add it here
 # do not delete the other 
 
 #internal includes
-include_directories(src/)
-include_directories(external/)
 aux_source_directory(external SOURCE)
 aux_source_directory(src SOURCE)
 
