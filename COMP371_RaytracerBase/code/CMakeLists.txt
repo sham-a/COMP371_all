@@ -37,6 +37,11 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 # If you need too manually add the paths to your Eigen library, you can add it here
 # do not delete the other 
 
+# These folders include some important header files including the header files for your own solution
+#do not remove
+include_directories(src/)
+include_directories(external/)
+
 #internal includes
 aux_source_directory(external SOURCE)
 aux_source_directory(src SOURCE)
