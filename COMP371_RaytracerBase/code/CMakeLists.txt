@@ -28,12 +28,15 @@ set(CMAKE_PREFIX_PATH
 )
 
 # ENCS Eigen3 CMake setup
+if (WIN32)
+include_directories(C:/Users/ambec/Desktop/labs/COMP371_all/COMP371_RaytracerBase/code/eigen-3.4.0/)# for windows you can directly hardcode the paths to your libraries in the include
+else() 
 set(ENV{EIGEN3_ROOT} /encs/pkg/eigen-3.3.7/root)
 set(CMAKE_MODULE_PATH /encs/pkg/eigen-3.3.7/root/cmake)
 
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
-
+endif()
 # If you need too manually add the paths to your Eigen library, you can add it here
 # do not delete the other 
 
