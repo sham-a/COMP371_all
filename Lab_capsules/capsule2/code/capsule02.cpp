@@ -280,8 +280,11 @@ int main(int argc, char*argv[])
     
     
     // Compile and link shaders here ...
-    int shaderProgram = compileAndLinkShaders(getVertexShaderSource2(), getFragmentShaderSource2());
+    int shaderProgram;
+    int vertexColorProgram = compileAndLinkShaders(getVertexShaderSource(), getFragmentShaderSource());
+    int voronoiProgram = compileAndLinkShaders(getVertexShaderSource2(), getFragmentShaderSource2());
     
+    shaderProgram = voronoiProgram;
     
     
     char infoLog[1024];
@@ -338,12 +341,21 @@ int main(int argc, char*argv[])
         // Detect inputs
         glfwPollEvents();
         
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+            shaderProgram = vertexColorProgram;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+            shaderProgram = voronoiProgram;
+        }
     }
     
     // Shutdown GLFW
     glfwTerminate();
     
-	return 0;
+    return 0;
 }
