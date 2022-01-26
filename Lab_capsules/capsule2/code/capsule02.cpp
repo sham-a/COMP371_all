@@ -38,92 +38,82 @@ void debug_gl(int place){
 const char* getVertexShaderSource()
 {
     return
-    "#version 330 core  \n"
-        "layout (location = 0) in vec2 aPos;\n"
-    "layout (location = 1) in vec3 col;\n"
-    "out vec3 vertexColor;\n"
-        ""
-        "\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos, 0, 1);\n"
-    " vertexColor = col;\n"
-        "\n"
-        "}\n";
+    "#version 330 core\n"
+    "layout (location = 0) in vec2 aPos;"
+    "layout (location = 1) in vec3 col;"
+    "out vec3 vertexColor;"
+    ""
+    "void main()"
+    "{"
+    "   gl_Position = vec4(aPos, 0, 1);"
+    "   vertexColor = col;"
+    "}";
 }
-
 
 const char* getFragmentShaderSource()
 {
     return
-    "#version 330 core  \n"
-    "in vec3 vertexColor;\n"
-        "out vec3 FragColor;"
-        ""
-        "void main()"
-        "{"
- //       "   FragColor = vec3(1, 1, 0);\n"
-    "   FragColor = vertexColor;\n"
-        "}";
+    "#version 330 core\n"
+    "in vec3 vertexColor;"
+    "out vec3 FragColor;"
+    ""
+    "void main()"
+    "{"
+    "   FragColor = vertexColor;"
+    "}";
 }
-
 
 const char* getVertexShaderSource2()
 {
     return
-    "#version 330 core  \n"
-        "layout (location = 0) in vec2 aPos;\n"
-    "layout (location = 1) in vec3 col;\n"
-    "layout (location = 2) in vec2 p1;\n"
-    "layout (location = 3) in vec2 p2;\n"
-    "layout (location = 4) in vec2 p3;\n"
-    "out vec3 vertexColor;\n"
-    "out vec2 op1;\n"
-    "out vec2 op2;\n"
-    "out vec2 op3;\n"
-    "out vec2 op;\n"
-        ""
-        "uniform mat2 rotMatrix = mat2(1.0);\n"  // default value for view matrix (identity)
-        "\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos, 0, 1);\n"
-    " vertexColor = col;\n"
-    "op1 = p1;op2 = p2;op3 = p3; op = aPos;\n"
-        "\n"
-        "}\n";
+    "#version 330 core\n"
+    "layout (location = 0) in vec2 aPos;"
+    "layout (location = 1) in vec3 col;"
+    "layout (location = 2) in vec2 p1;"
+    "layout (location = 3) in vec2 p2;"
+    "layout (location = 4) in vec2 p3;"
+    "out vec3 vertexColor;"
+    "out vec2 op1;"
+    "out vec2 op2;"
+    "out vec2 op3;"
+    "out vec2 op;"
+    ""
+    "void main()"
+    "{"
+    "   gl_Position = vec4(aPos, 0, 1);"
+    "   vertexColor = col;"
+    "   op1 = p1;"
+    "   op2 = p2;"
+    "   op3 = p3;"
+    "   op = aPos;"
+    "}";
 }
 
 const char* getFragmentShaderSource2()
 {
     return
-    "#version 330 core  \n"
-    "in vec3 vertexColor;\n"
-    "in vec2 op1;\n"
-    "in vec2 op2;\n"
-    "in vec2 op3;\n"
-    "in vec2 op;\n"
-        "out vec3 FragColor;\n"
-        "\n"
-        "void main()\n"
-        "{\n"
-    "if((op[0]-op1[0])*(op[0]-op1[0]) + \n" "(op[1]-op1[1])*(op[1]-op1[1])<=(op[0]-op2[0])*(op[0]-op2[0]) +\n"
-      " (op[1]-op2[1])*(op[1]-op2[1])){\n"
-    
-    "if((op[0]-op1[0])*(op[0]-op1[0]) + \n" "(op[1]-op1[1])*(op[1]-op1[1])<=(op[0]-op3[0])*(op[0]-op3[0]) +\n"
-      " (op[1]-op3[1])*(op[1]-op3[1])){\n"
-    
-     "   FragColor = vec3(1, 0, 0);\n"
-  "  } else {\n"
-"        FragColor = vec3(0, 0, 1);\n"
-"    } }else {\n"
-    "if((op[0]-op2[0])*(op[0]-op2[0]) + \n" "(op[1]-op2[1])*(op[1]-op2[1])<=(op[0]-op3[0])*(op[0]-op3[0]) +\n"
-      " (op[1]-op3[1])*(op[1]-op3[1])){\n"
-    
-     "   FragColor = vec3(0, 1, 0);\n"
-  "  } else {\n"
-"        FragColor = vec3(0, 0, 1);\n"
-        "}}}\n";
+    "#version 330 core\n"
+    "in vec3 vertexColor;"
+    "in vec2 op1;"
+    "in vec2 op2;"
+    "in vec2 op3;"
+    "in vec2 op;"
+    "out vec3 FragColor;"
+    ""
+    "void main()"
+    "{"
+    "    if (distance(op, op1) <= distance(op, op2)"
+    "        && distance(op, op1) <= distance(op, op3)) {"
+    ""
+    "        FragColor = vec3(1, 0, 0);"
+    ""
+    "    } else if (distance(op, op2) <= distance(op, op3)) {"
+    ""
+    "        FragColor = vec3(0, 1, 0);"
+    "    } else {"
+    "        FragColor = vec3(0, 0, 1);"
+    "    }"
+    "}";
 }
 
 
@@ -290,7 +280,6 @@ int main(int argc, char*argv[])
     
     
     // Compile and link shaders here ...
-    //int shaderProgram = compileAndLinkShaders(getVertexShaderSource(), getFragmentShaderSource());
     int shaderProgram = compileAndLinkShaders(getVertexShaderSource2(), getFragmentShaderSource2());
     
     
