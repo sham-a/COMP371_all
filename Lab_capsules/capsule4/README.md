@@ -24,4 +24,4 @@ cd <build_directory>
 
 ## Troubleshooting
 
-Make sure the shaders are in the same folder as the *capsule04*.
+Make sure the shaders are in the same folder as the *capsule04* executable.
