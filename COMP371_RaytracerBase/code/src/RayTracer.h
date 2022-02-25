@@ -41,14 +41,16 @@ class Ray {
     Eigen::Vector3f dir;    // direction of ray vector
 public:
     Ray(Point p, Eigen::Vector3f d);
-    Point atPos();
+    Point atPos(double t);
+    Eigen::Vector3f getDirection() { return dir; };
+    Point getOrigin() { return origin; };
 };
 
 class Shape {
     string shapeType;
 public:
     Shape(string shape);
-    string getShape() { return this->shapeType };
+    string getShape() { return this->shapeType; };
 };
 class Sphere : public Shape {
     double radius;
@@ -56,6 +58,7 @@ class Sphere : public Shape {
 public:
     Sphere(string type, double r, Eigen::Vector3f c);
     bool intersected(Ray ray);
+    float quadFormula(float &a, float &b, float &c);
 };
 
 class Rectangle : public Shape {

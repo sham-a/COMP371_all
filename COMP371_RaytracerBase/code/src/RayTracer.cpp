@@ -81,6 +81,10 @@ Ray::Ray(Point p, Eigen::Vector3f d) {
     this->origin = p;
     this->dir = d;
 }
+Point Ray::atPos(double t) {
+    Point p = this->origin + t * this->dir;
+    return p;
+}
 
 // SHAPE CLASS
 Shape::Shape(string shape){
@@ -94,7 +98,42 @@ Sphere::Sphere(string type, double r, Eigen::Vector3f c) : Shape(type){
 }
 
 bool Sphere::intersected(Ray ray){
-    
+    float a = ray.getDirection().dot(ray.getDirection());
+    float b = 2 * ray.getDirection().dot(ray.getOrigin() - this->centre);
+    float c = (ray.getOrigin() - this->centre).dot((ray.getOrigin() - this->centre)) - this->radius;
+    float points = quadFormula(a, b, c);
+    if (points == 0){
+        return false;
+    }
+    return true;
+}
+
+float Sphere::quadFormula(float &a, float &b, float &c){
+    float discr = b * b - 4 * a * c;
+    // no real solution
+    if (discr < 0) {
+        return 0;
+    }
+    // one real solution
+    else if (discr == 0) {
+        float x0 = -b / (2 * a);
+        return 1;
+    }
+    // two real solutions
+    else {
+        float x [2];
+        float x1 = (-b + discr) / (2*a);
+        float x2 = (-b - discr) / (2*a);
+        if (x1 < x2) {
+            x[0] = x1;
+            x[1] = x2;
+        }
+        else {
+            x[0] = x2;
+            x[1] = x1;
+        }
+        return 2;
+    }
 }
 
 // RECTANGLE CLASS
