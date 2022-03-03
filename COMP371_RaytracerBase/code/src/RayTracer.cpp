@@ -13,6 +13,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "Sphere.h"
+#include "Rectangle.h"
+#include "Ray.h"
 
 
 using namespace std;
@@ -24,15 +27,37 @@ RayTracer::RayTracer(nlohmann::json j){
 void RayTracer::run() {
     readJSON();
     
+    cout << "I am officially a " << shape->getShape() << endl;
+    
+    std::vector<double> buffer(3*dimx*dimy);
+    for(int j=0;j<dimy;++j){
+        for(int i=0;i<dimx;++i){
+            Eigen::Vector3f dir = createDirVector(i, j);
+            Ray *ray = new Ray(o, dir);
+            auto r = 1;
+            auto g = 1;
+            auto b = 1;
+            if (shape->intersected(*ray)){
+                r = ac[0];
+                g = ac[1];
+                b = ac[2];
+            }
+
+            buffer[3*j*dimx+3*i+0]= r;
+            buffer[3*j*dimx+3*i+1]= g;
+            buffer[3*j*dimx+3*i+2]= b;
+        }
+    }
+    save_ppm("test.ppm", buffer, dimx, dimy);
 }
 
 void RayTracer::readJSON() {
-    for (auto itr = this->j["geometry"].begin(); itr!= this->j["geometry"].end(); itr++) {
+    for (auto itr = j["geometry"].begin(); itr!= j["geometry"].end(); itr++) {
+        // Initializing the shape
         string type;
         if(itr->contains("type")) {
             type = (*itr)["type"].get<string>();
             if (type == "sphere"){
-                cout << "it's a sphere" << endl;
                 Eigen::Vector3f c(0, 0, 0);
                 int i = 0;
                 for (auto itr2 =(*itr)["centre"].begin(); itr2!= (*itr)["centre"].end(); itr2++){
@@ -41,10 +66,9 @@ void RayTracer::readJSON() {
                     }
                 }
                 int r =(*itr)["radius"].get<int>();
-                this->shape = new Sphere(type, r, c);
+                shape = new Sphere(type, r, c);
             }
             else if (type == "rectangle"){
-                cout << "it's a rectanlge" << endl;
                 Eigen::Vector3f p1(0, 0, 0);
                 Eigen::Vector3f p2(0, 0, 0);
                 Eigen::Vector3f p3(0, 0, 0);
@@ -67,79 +91,62 @@ void RayTracer::readJSON() {
                     if(i<3) { p4[i++] = (*itr2).get<float>(); }
                 }
                 
-                this->shape = new Rectangle(type, p1, p2, p3, p4);
+                shape = new Rectangle(type, p1, p2, p3, p4);
             }
             else {
                 cout << "it is not a sphere or rectangle, it is a: " << type << endl;
             }
         }
-    }
-}
-
-// RAY CLASS
-Ray::Ray(Point p, Eigen::Vector3f d) {
-    this->origin = p;
-    this->dir = d;
-}
-Point Ray::atPos(double t) {
-    Point p = this->origin + t * this->dir;
-    return p;
-}
-
-// SHAPE CLASS
-Shape::Shape(string shape){
-    this->shapeType = shape;
-}
-
-// SPHERE CLASS
-Sphere::Sphere(string type, double r, Eigen::Vector3f c) : Shape(type){
-    this->radius = r;
-    this->centre = c;
-}
-
-bool Sphere::intersected(Ray ray){
-    float a = ray.getDirection().dot(ray.getDirection());
-    float b = 2 * ray.getDirection().dot(ray.getOrigin() - this->centre);
-    float c = (ray.getOrigin() - this->centre).dot((ray.getOrigin() - this->centre)) - this->radius;
-    float points = quadFormula(a, b, c);
-    if (points == 0){
-        return false;
-    }
-    return true;
-}
-
-float Sphere::quadFormula(float &a, float &b, float &c){
-    float discr = b * b - 4 * a * c;
-    // no real solution
-    if (discr < 0) {
-        return 0;
-    }
-    // one real solution
-    else if (discr == 0) {
-        float x0 = -b / (2 * a);
-        return 1;
-    }
-    // two real solutions
-    else {
-        float x [2];
-        float x1 = (-b + discr) / (2*a);
-        float x2 = (-b - discr) / (2*a);
-        if (x1 < x2) {
-            x[0] = x1;
-            x[1] = x2;
+        // Reading the color values
+        int i = 0;
+        for (auto itr2 =(*itr)["ac"].begin(); itr2!= (*itr)["ac"].end(); itr2++){
+            if(i<3){ ac[i++] = (*itr2).get<float>(); }
         }
-        else {
-            x[0] = x2;
-            x[1] = x1;
+        i = 0;
+        for (auto itr2 =(*itr)["dc"].begin(); itr2!= (*itr)["dc"].end(); itr2++){
+            if(i<3){ dc[i++] = (*itr2).get<float>(); }
         }
-        return 2;
+        i = 0;
+        for (auto itr2 =(*itr)["sc"].begin(); itr2!= (*itr)["sc"].end(); itr2++){
+            if(i<3){ sc[i++] = (*itr2).get<float>(); }
+        }
+    }
+    for (auto itr = j["output"].begin(); itr!= j["output"].end(); itr++) {
+        if(itr->contains("filename")) {
+            int i = 0;
+            for (auto itr2 =(*itr)["size"].begin(); itr2!= (*itr)["size"].end(); itr2++){
+                if(i == 0) { dimx = (*itr2).get<int>(); }
+                if(i == 1) { dimy = (*itr2).get<int>(); }
+                i++;
+            }
+            i = 0;
+            for (auto itr2 =(*itr)["lookat"].begin(); itr2!= (*itr)["lookat"].end(); itr2++){
+                if(i<3) { l[i++] = (*itr2).get<float>(); }
+            }
+            i = 0;
+            for (auto itr2 =(*itr)["up"].begin(); itr2!= (*itr)["up"].end(); itr2++){
+                if(i<3) { u[i++] = (*itr2).get<float>(); }
+            }
+            fov = (double)(*itr)["fov"].get<int>();
+            fov *= M_PI / 180;      // set it to radians
+            i = 0;
+            for (auto itr2 =(*itr)["centre"].begin(); itr2!= (*itr)["centre"].end(); itr2++){
+                if(i<3){
+                    o[i++] = (*itr2).get<float>();
+                }
+            }
+        }
     }
 }
-
-// RECTANGLE CLASS
-Rectangle::Rectangle(string type, Eigen::Vector3f a, Eigen::Vector3f b, Eigen::Vector3f c, Eigen::Vector3f d) : Shape(type) {
-    this->p1 = a;
-    this->p2 = b;
-    this->p3 = c;
-    this->p4 = d;
+Eigen::Vector3f RayTracer::createDirVector(int i, int j){
+    double delta = 2 * tan(fov/2) / dimy;
+//    cout << delta << endl;
+    Eigen::Vector3f r = l.cross(u);
+    Eigen::Vector3f A = o + l;
+    Eigen::Vector3f B = A + tan(fov/2) * u;
+    Eigen::Vector3f C = B - dimx * delta * r / 2;
+    Eigen::Vector3f p = C + (j * delta + delta/2) * r - (i * delta + delta/2) * u;
+    Eigen::Vector3f dir = p.normalized() - o;
+//    cout << fov << ", "<< dimy << endl;
+    return dir;
 }
