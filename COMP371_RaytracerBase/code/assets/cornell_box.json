@@ -294,9 +294,9 @@
             "type":"rectangle",
 
             "p1":[265, 0, -296],
-            "p2":[265, 330, -296],
+            "p4":[265, 330, -296],
             "p3":[423, 330, -247.0],
-            "p4":[423, 0, -247],
+            "p2":[423, 0, -247],
 
 
             "ac":[1,1,0],
@@ -325,7 +325,7 @@
             "id":[1, 1, 1],
             "is":[1, 1, 1],
             "n": 5,
-            "usecenter": false
+            "usecenter": true
         },
         {
             "type":"point",
@@ -347,8 +347,8 @@
 
         "globalillum": true,
         "raysperpixel": [10, 10],
-        "maxbounces": 2,
-        "probterminate": 0.5
+        "maxbounces": 5,
+        "probterminate": 0.2
     }
     ]
 }
