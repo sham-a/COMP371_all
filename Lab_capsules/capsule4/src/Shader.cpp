@@ -4,7 +4,10 @@
 #include <fstream>
 #include <stdexcept>
 #include <sstream>
+
+#if __cplusplus >= 201703L
 #include <filesystem>
+#endif
 
 #include <glm/glm.hpp>
 
@@ -88,15 +91,27 @@ void Shader::setVar<glm::vec2>(glm::vec2 var, std::string varname)
 
 std::string Shader::readFileContents(const std::string& filepath)
 {
+#if __cplusplus >= 201703L
     if(!std::filesystem::exists(filepath))
     {
         std::stringstream error;
-        error << "File read error: " << std::filesystem::current_path() / filepath << " does not exist.";
+        error << "File read error: " << std::filesystem::current_path() / filepath << " not found.";
         throw std::runtime_error(error.str());
     }
+#endif
 
     std::string contents;
     std::ifstream infile(filepath, std::ios::ate);
+
+#if __cplusplus < 201703L
+    if(!infile.is_open())
+    {
+        std::stringstream error;
+        error << "File read error: " << filepath << " not found.";
+        throw std::runtime_error(error.str());
+    }
+#endif
+
     std::ios::pos_type end = infile.tellg();
     contents.resize(end);
     infile.seekg(0, std::ios::beg);
