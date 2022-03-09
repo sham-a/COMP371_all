@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(capsule01) # The name of your choice for the project comes here
+project(texture) # The name of your choice for the project comes here
 
 set(CMAKE_BUILD_TYPE Debug)
 
