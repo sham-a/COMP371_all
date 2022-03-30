@@ -14,10 +14,13 @@
 class Sphere : public Shape {
     double radius;
     Eigen::Vector3f centre;
+    float rSquared;
 public:
-    Sphere(std::string type, double r, Eigen::Vector3f c);
-    virtual bool intersected(Ray ray);
-    float quadFormula(float &a, float &b, float &c);
+    Sphere(std::string type, double r, Eigen::Vector3f c, float ka, float kd, float ks, Eigen::Vector3f ac, Eigen::Vector3f dc,
+           Eigen::Vector3f sc, float pc);
+    virtual Eigen::Vector3f get_centre() { return centre; };
+    bool intersected(Ray *ray) override;
+    float quadFormula(float a, float b, float c);
 };
 
 #endif /* Sphere_h */
