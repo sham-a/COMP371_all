@@ -15,7 +15,7 @@ Sphere::Sphere(std::string type, double r, Eigen::Vector3f c, float ka, float kd
                : Shape(type, ka, kd,  ks, ac, dc, sc, pc), radius(r), centre(c){
     rSquared = radius * radius;
 }
-bool Sphere::intersected(Ray *ray){
+void Sphere::intersected(Ray *ray){
     float a = ray->getDSquared();
     float b = 2 * ray->getDirection().dot(ray->getOrigin() - centre);
     float c = (ray->getOrigin() - centre).dot(ray->getOrigin() - centre) - rSquared;
@@ -24,9 +24,7 @@ bool Sphere::intersected(Ray *ray){
         Eigen::Vector3f p = ray->atPos(pos);
         Eigen::Vector3f norm = (p - centre).normalized();
         ray->setClosestShape(pos, this, p, norm);
-        return true;
     }
-    return false;
 }
 float Sphere::quadFormula(float a, float b, float c){
     float discr = b * b - 4 * a * c;

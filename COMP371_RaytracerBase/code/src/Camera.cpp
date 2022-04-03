@@ -21,11 +21,16 @@ Camera::Camera(std::string f, int width, int height, Eigen::Vector3f l, Eigen::V
     topLeft = B - dimx * delta * r / 2;
 }
 Ray Camera::create_ray(float x, float y) {
-    if(x == 301 && y == 140) {
-        std::cout << "       ** creating cast light" << std::endl;
-    }
-    Eigen::Vector3f temp = topLeft + (x * delta + delta/2) * r - (y * delta + delta/2) * up;
-    Eigen::Vector3f temp2 = (temp - centre)/(temp - centre).norm();
+    Eigen::Vector3f temp = topLeft + (x * delta) * r - (y * delta + delta/2) * up;
+    Eigen::Vector3f temp2 = (temp - centre).normalized();
     Ray ray(centre, temp2);
     return ray;
 }
+
+void Camera::setAntialiasing(bool anti, int rpp, int grid) {
+    antialiasing = anti;
+    raysperpixel = rpp;
+    gridSize = grid;
+
+}
+

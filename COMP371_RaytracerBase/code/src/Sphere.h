@@ -19,7 +19,7 @@ public:
     Sphere(std::string type, double r, Eigen::Vector3f c, float ka, float kd, float ks, Eigen::Vector3f ac, Eigen::Vector3f dc,
            Eigen::Vector3f sc, float pc);
     virtual Eigen::Vector3f get_centre() { return centre; };
-    bool intersected(Ray *ray) override;
+    void intersected(Ray *ray) override;
     float quadFormula(float a, float b, float c);
 };
 

@@ -29,7 +29,7 @@ public:
     RayTracer(nlohmann::json j);
     void run();
     void readJSON();
-//    Eigen::Vector3f createDirVector(int i, int j);
+    void clamp(Eigen::Vector3f *v);
 };
 
 

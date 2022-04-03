@@ -25,7 +25,7 @@ class Shape {
 public:
     Shape(std::string shape, float ka, float kd, float ks, Eigen::Vector3f ac, Eigen::Vector3f dc,
           Eigen::Vector3f sc, float pc);
-    virtual bool intersected(Ray *ray) = 0;
+    virtual void intersected(Ray *ray) = 0;
     std::string get_shape() { return this->shapeType; };
     float getKa() { return ka; };
     float getKd() { return kd; };

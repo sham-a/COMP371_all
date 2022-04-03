@@ -21,6 +21,10 @@ class Camera {
     Eigen::Vector3f ai;
     Eigen::Vector3f bkc;
 
+    bool antialiasing;
+    int raysperpixel;
+    int gridSize;
+
     Eigen::Vector3f r;
     float delta;
     Eigen::Vector3f topLeft;
@@ -28,6 +32,7 @@ public:
     Camera(std::string f, int width, int height, Eigen::Vector3f l, Eigen::Vector3f u, Eigen::Vector3f c, float fov,
            Eigen::Vector3f ai, Eigen::Vector3f bkc);
     Ray create_ray(float x, float y);
+    void setAntialiasing(bool anti, int rpp, int grid);
     std::string &getFilename() { return filename; };
     int getDimx() const { return dimx; };
     int getDimy() const { return dimy; };
@@ -37,6 +42,9 @@ public:
     float getFov() { return fov; };
     Eigen::Vector3f &getAi() { return ai; };
     Eigen::Vector3f &getBkc() { return bkc; };
+    bool isAntialiasing() { return antialiasing; };
+    int getRPP() { return raysperpixel; };
+    int getGridSize() { return gridSize; };
 };
 
 #endif /* Camera_h */

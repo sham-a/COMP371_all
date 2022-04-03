@@ -24,7 +24,7 @@ class Rectangle : public Shape {
 public:
     Rectangle(std::string type, Eigen::Vector3f a, Eigen::Vector3f b, Eigen::Vector3f c, Eigen::Vector3f d, float ka,
               float kd, float ks, Eigen::Vector3f ac, Eigen::Vector3f dc, Eigen::Vector3f sc, float pc);
-    bool intersected(Ray *ray) override;
+    void intersected(Ray *ray) override;
 };
 
 #endif /* Rectangle_h */
