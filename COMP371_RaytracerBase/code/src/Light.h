@@ -24,10 +24,14 @@ protected:
     vector<Shape *> shapes;
 public:
     Light(string type, Eigen::Vector3f lid, Eigen::Vector3f is, vector<Shape *> s);
+    virtual Eigen::Vector3f cast_light(Ray *ray) = 0;
+
+    // getters
     string get_type() { return type; };
     Eigen::Vector3f getLid() { return lid; };
     Eigen::Vector3f getIs() { return is; };
-    virtual Eigen::Vector3f cast_light(Ray *ray) = 0;
+
+    virtual ~Light() = default;
 };
 
 class PointLight : public Light {
@@ -36,5 +40,7 @@ public:
     PointLight(string type, Eigen::Vector3f centre, Eigen::Vector3f lid, Eigen::Vector3f is, vector<Shape *> s);
     Eigen::Vector3f cast_light(Ray *ray) override;
     static void clamp(Eigen::Vector3f *v);
+
+    ~PointLight() = default;
 };
 #endif /* Light_h */

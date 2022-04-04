@@ -21,6 +21,7 @@ public:
     virtual Eigen::Vector3f get_centre() { return centre; };
     void intersected(Ray *ray) override;
     float quadFormula(float a, float b, float c);
+    ~Sphere() = default;
 };
 
 #endif /* Sphere_h */

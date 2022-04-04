@@ -31,6 +31,23 @@ void Camera::setAntialiasing(bool anti, int rpp, int grid) {
     antialiasing = anti;
     raysperpixel = rpp;
     gridSize = grid;
-
 }
 
+void Camera::writeColor(Eigen::Vector3f color) {
+    char colors[3];
+    for (int i = 0; i < 3; i++) {
+        colors[i] = char(static_cast<char>(255.999 * color[i]));
+    }
+    file.write(colors, 3);
+}
+
+void Camera::writeFile(std::vector<Eigen::Vector3f> buffer) {
+    file.open(filename, std::ios_base::binary);
+    file << "P6" << std::endl << dimx << ' ' << dimy << std::endl << "255" << std::endl;
+    for (int i = 0; i < dimx; i ++) {
+        for (int j = 0; j < dimy; j++) {
+            writeColor(buffer[j*dimx + i]);
+        }
+    }
+    file.close();
+}

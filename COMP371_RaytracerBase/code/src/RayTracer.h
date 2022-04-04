@@ -30,6 +30,8 @@ public:
     void run();
     void readJSON();
     void clamp(Eigen::Vector3f *v);
+
+    ~RayTracer();
 };
 
 

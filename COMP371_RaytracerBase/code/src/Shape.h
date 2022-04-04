@@ -34,6 +34,8 @@ public:
     Eigen::Vector3f getDc() { return dc; };
     Eigen::Vector3f getSc() { return sc; };
     float getPc() { return pc; };
+
+    virtual ~Shape() = default;
 };
 
 #endif /* Shape_h */

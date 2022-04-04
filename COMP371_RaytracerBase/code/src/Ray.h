@@ -33,6 +33,7 @@ public:
     Eigen::Vector3f getIntersectedPoint() { return point; };
     Eigen::Vector3f getIntersectedNormal() { return normal; };
     Shape *getIntersectedShape() { return intersectedShape; };
+    ~Ray() = default;
 };
 
 #endif /* Ray_h */

@@ -16,6 +16,8 @@ using namespace std;
 Light::Light(string type, Eigen::Vector3f lid, Eigen::Vector3f is, vector<Shape *> s)
         : type(type), lid(lid), is(is), shapes(s) {}
 
+
+
 PointLight::PointLight(string type, Eigen::Vector3f centre, Eigen::Vector3f lid, Eigen::Vector3f is, vector<Shape *> s)
         : Light(type, lid, is, s), centre(centre) {}
 
